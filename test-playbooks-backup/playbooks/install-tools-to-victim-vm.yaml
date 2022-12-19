@@ -1,0 +1,18 @@
+# TODO:
+# - See if there's a need to install tools on attacking machine
+
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Stop tomcat to prepare for configuration
+      shell: systemctl stop tomcat
+
+    - name: Configure vulnerable java webapp
+      shell: |
+        git clone https://github.com/kozmer/log4j-shell-poc.git
+        rm -rf /usr/share/tomcat/webapps/ROOT && cp log4j-shell-poc/target/log4shell-1.0-SNAPSHOT.war /usr/share/tomcat/webapps/ROOT.war
+
+
+    - name: Restart tomcat to server the vulnerable webapp
+      shell: systemctl start tomcat

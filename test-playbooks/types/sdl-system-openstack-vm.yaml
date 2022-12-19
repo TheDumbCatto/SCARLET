@@ -1,0 +1,76 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+  - root-types/sdl-system.yaml
+
+node_types:
+  sdl.System.Openstack.VM:
+    derived_from: sdl.System
+    properties:
+      cloud:
+        type: string
+        description: Openstack credential to use for deployment
+      network:
+        type: string
+        description: OpenStack network id (network names are not accepted)
+      security_groups:
+        type: string
+        description:
+          OpenStack names of the security groups to which the instance should be added (comma separated string)
+      key_name:
+        type: string
+        description: OpenStack SSH key name that should be placed on the VM
+      name:
+        type: string
+        description: Name for the compute node
+      image:
+        type: string
+        description: Image ID/name for the compute node
+      flavor:
+        type: string
+        description: OpenStack flavor id (flavor names are not accepted)
+      ssh_user:
+        type: string
+        description: The username that will be used to connect to the created VM
+      ssh_key_file:
+        type: string
+        description: Path to the local SSH private key file that will be used for the ssh connection to the VM
+      vm_group:
+        type: string
+        description: Group name for the node in Ansible's inventory
+    attributes:
+      id:
+        type: string
+        description: OpenStack id of the VM
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        operations:
+          create:
+            inputs:
+              cloud: { value: { get_property: [ SELF, cloud ] }, type: string }
+              vm_name: { value: { get_property: [ SELF, name ] }, type: string }
+              vm_image: { value: { get_property: [ SELF, image ] }, type: string }
+              vm_flavor: { value: { get_property: [ SELF, flavor ] }, type: string }
+              vm_network: { value: { get_property: [ SELF, network ] }, type: string }
+              vm_key_name: { value: { get_property: [ SELF, key_name ] }, type: string }
+              vm_security_groups: { value: { get_property: [ SELF, security_groups ] }, type: string }
+              ssh_user: { value: { get_property: [ SELF, ssh_user ] }, type: string }
+              ssh_key_file: { value: { get_property: [ SELF, ssh_key_file ] }, type: string }
+              vm_group: { value: { get_property: [ SELF, vm_group ] }, type: string }
+            implementation: ../playbooks/create-and-connect-to-vm.yaml
+
+#relationship_types:
+#  sdl.relationships.ConfigureTarget.Log4Shell:
+#    derived_from: sdl.relationships.ConfigureTarget
+#    interfaces:
+#      Configure:
+#        operations:
+#          post_configure_target:
+#            inputs:
+#              ssh_user: { value: { get_property: [ TARGET, ssh_user ] }, type: string }
+#              ssh_key_file: { value: { get_property: [ TARGET, ssh_key_file ] }, type: string }
+#              cloud: { value: { get_property: [ TARGET, cloud ] }, type: string }
+#              name: { value: { get_property: [ TARGET, name ] }, type: string }
+#            implementation:
+#              primary: ../playbooks/install-tools-to-victim-vm.yaml

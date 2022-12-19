@@ -1,0 +1,14 @@
+{
+  "tosca_name": {
+    "is_set": true,
+    "data": "cve_2021_44228-vulnerable_host-victim_vm"
+  },
+  "tosca_id": {
+    "is_set": true,
+    "data": "cve_2021_44228_0--victim_vm_0"
+  },
+  "state": {
+    "is_set": true,
+    "data": "initial"
+  }
+}

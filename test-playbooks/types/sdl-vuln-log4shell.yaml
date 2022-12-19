@@ -1,0 +1,15 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+  - root-types/sdl-vuln.yaml
+
+node_types:
+  sdl.vulnerabilities.Log4Shell:
+    derived_from: sdl.vulnerabilities
+    capabilities:
+      exploitable:
+        type: sdl.capabilities.Exploitable
+    requirements:
+      - vulnerable_host:
+          capability: sdl.capabilities.VulnerabilityContainer
+          relationship: sdl.relationships.ConfigureTarget.Log4Shell

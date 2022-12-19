@@ -1,0 +1,119 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  template_name: "theater-demo"
+  template_author: ""
+  template_version: "0.1"
+
+imports:
+  - types/sdl-system-openstack-vm.yaml
+  - types/sdl-vuln-log4shell.yaml
+  - types/sdl-relationship-log4shell.yaml
+  - types/root-types/sdl-capability.yaml
+  - types/root-types/sdl-relationship.yaml
+
+node_types:
+  sdl.System.Openstack.VM.Target:
+    derived_from: sdl.System.Openstack.VM
+    capabilities:
+      vulnerable_to_log4shell:
+        type: sdl.capabilities.VulnerabilityContainer
+
+  sdl.System.Openstack.VM.Adversary:
+    derived_from: sdl.System.Openstack.VM
+    requirements:
+      - exploit_cve:
+          capability: sdl.capabilities.Exploitable
+          relationship: sdl.relationships.ConfigureAdversary.Log4Shell
+
+topology_template:
+  inputs:
+    cloud:
+      type: string
+    ssh_user:
+      type: string
+    ssh_key_file:
+      type: string
+    victim_vm_name:
+      type: string
+    victim_vm_image:
+      type: string
+    victim_vm_flavor:
+      type: string
+    victim_vm_network:
+      type: string
+    victim_vm_security_groups:
+      type: string
+    victim_vm_key_name:
+      type: string
+    victim_vm_group:
+      type: string
+    offense_vm_name:
+      type: string
+    offense_vm_image:
+      type: string
+    offense_vm_flavor:
+      type: string
+    offense_vm_network:
+      type: string
+    offense_vm_security_groups:
+      type: string
+    offense_vm_key_name:
+      type: string
+    offense_vm_group:
+      type: string
+
+  node_templates:
+    victim_vm:
+      type: sdl.System.Openstack.VM.Target
+      properties:
+        cloud: { get_input: cloud }
+        name: { get_input: victim_vm_name }
+        image: { get_input: victim_vm_image }
+        flavor: { get_input: victim_vm_flavor }
+        network: { get_input: victim_vm_network }
+        security_groups: { get_input: victim_vm_security_groups }
+        key_name: { get_input: victim_vm_key_name }
+        vm_group: { get_input: victim_vm_group }
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+
+#    tomcatWebServer:
+#      type: sdl.Software.WebServer.TomcatWebServer
+#      properties:
+#        ssh_user: { get_input: ssh_user }
+#        ssh_key_file: { get_input: ssh_key_file }
+#      requirements:
+#        - host: victim_vm
+
+    adversary_vm:
+      type: sdl.System.Openstack.VM.Adversary
+      properties:
+        cloud: { get_input: cloud }
+        name: { get_input: offense_vm_name }
+        image: { get_input: offense_vm_image }
+        flavor: { get_input: offense_vm_flavor }
+        network: { get_input: offense_vm_network }
+        security_groups: { get_input: offense_vm_security_groups }
+        key_name: { get_input: offense_vm_key_name }
+        vm_group: { get_input: offense_vm_group }
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+      requirements:
+        - exploit_cve: cve_2021_44228
+
+
+    cve_2021_44228:
+      type: sdl.vulnerabilities.Log4Shell
+      requirements:
+        - vulnerable_host: victim_vm
+
+#    vulnerability:
+#      type: sdl.Vulnerability.Spring4Shell
+#      properties:
+#        ssh_user: { get_input: ssh_user }
+#        ssh_key_file: { get_input: ssh_key_file }
+#      requirements:
+#        - host: nginx
+
+

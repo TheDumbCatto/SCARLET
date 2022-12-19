@@ -1,0 +1,65 @@
+- name: Gather victim VM info and add to in-memory inventory
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Gather VM info
+      openstack.cloud.server_info:
+        cloud: "{{ cloud }}"
+        server: "{{ name }}"
+      register: servers_info
+    - name: Add VMs to in-memory inventory
+      add_host:
+        name: "{{ item.public_v4 }}"
+        groups: vms
+        ansible_host: "{{ item.public_v4 }}"
+        ansible_user: "{{ ssh_user }}"
+        ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+        ansible_ssh_common_args: >
+          -o IdentitiesOnly=yes
+          -o BatchMode=yes
+          -o UserKnownHostsFile=/dev/null
+          -o StrictHostKeyChecking=no
+      loop: "{{ servers_info.openstack_servers }}"
+
+- name: Configure victim VM
+  hosts: vms
+  gather_facts: no
+  become: yes
+  vars:
+    ansible_ssh_user: "{{ ssh_user }}"
+    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+  tasks:
+    - name: Testing
+      shell: touch /home/centos/hello_again.txt
+    - name: Debugging
+      debug:
+        msg: 'This ran'
+#    - name: Add docker repo to yum
+#      yum_repository:
+#        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+    - name: Add docker repo to yum
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#    - name: Debugging 3
+#      debug:
+#        msg: 'Done adding docker repo'
+    - name: Download required files
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+          - git
+        state: present
+
+    - name: Download log4shell poc
+      shell: git clone https://github.com/kozmer/log4j-shell-poc.git
+
+    - name: Run a vulnerable log4shell poc and add a flag file to the container
+      shell: |
+        systemctl start docker
+        docker build -t log4j-shell-poc .
+        echo $'Tony Stark was able to build this from a box of scraps.\n\n\nIN A CAVE!' >> secret_message.txt
+        docker cp secret_message.txt $(docker run -d --network host log4j-shell-poc):/root/secret_message.txt 
+      args:
+        chdir: log4j-shell-poc/

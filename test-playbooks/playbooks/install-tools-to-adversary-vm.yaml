@@ -1,0 +1,50 @@
+- name: Gather adversary VM info and add to in-memory inventory
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Gather VM info
+      openstack.cloud.server_info:
+        cloud: "{{ cloud }}"
+        server: "{{ name }}"
+      register: servers_info
+    - name: Add VMs to in-memory inventory
+      add_host:
+        name: "{{ item.public_v4 }}"
+        groups: vms
+        ansible_host: "{{ item.public_v4 }}"
+        ansible_user: "{{ ssh_user }}"
+        ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+        ansible_ssh_common_args: >
+          -o IdentitiesOnly=yes
+          -o BatchMode=yes
+          -o UserKnownHostsFile=/dev/null
+          -o StrictHostKeyChecking=no
+      loop: "{{ servers_info.openstack_servers }}"
+
+- hosts: vms
+  gather_facts: no
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+    ansible_ssh_user: "{{ ssh_user }}"
+  tasks:
+    - name: Download required files
+      yum:
+        name:
+          - git
+          - python3
+          - python3-pip
+          - nc
+        state: present
+
+    - name: Download log4shell exploit
+      shell: |
+        git clone https://github.com/kozmer/log4j-shell-poc.git
+
+    - name: Download required files
+      shell: |
+        curl -L -o jdk-8u20-linux-x64.tar.gz http://www.cs.ait.ac.th/~marikhu/installers/jdk-8u20-linux-x64.tar.gz
+        tar -xf jdk-8u20-linux-x64.tar.gz
+        python3 -m pip install -r requirements.txt
+      args:
+        chdir: log4j-shell-poc

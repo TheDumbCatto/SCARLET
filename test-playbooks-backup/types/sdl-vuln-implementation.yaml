@@ -1,0 +1,33 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+  - root-types/sdl-vuln.yaml
+  - root-types/sdl-capability.yaml
+  - root-types/sdl-relationship.yaml
+
+node_types:
+  sdl.vulnerabilities.Log4Shell:
+    derived_from: sdl.vulnerabilities
+
+relationship_types:
+  sdl.relationships.ConfigureTarget.Log4Shell:
+    derived_from: sdl.relationships.ConfigureTarget
+    interfaces:
+      Configure:
+        operations:
+          post_configure_target:
+            inputs:
+              ssh_user: { value: { get_property: [ TARGET, ssh_user ] }, type: string }
+              ssh_key_file: { value: { get_property: [ TARGET, ssh_key_file ] }, type: string }
+            implementations:
+              primary: ../playbooks/install-tools-to-victim-vm.yaml
+
+  sdl.relationships.ConfigureAdversary.Log4Shell:
+    derived_from: sdl.relationships.ConfigureAdversary
+    interfaces:
+      Configure:
+        operations:
+          post_configure_source:
+            inputs:
+              ssh_user: { value: { get_property: [ TARGET, ssh_user ] }, type: string }
+              ssh_key_file: { value: { get_property: [ TARGET, ssh_key_file ] }, type: string }

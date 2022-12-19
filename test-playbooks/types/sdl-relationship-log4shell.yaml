@@ -1,0 +1,32 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+  - root-types/sdl-relationship.yaml
+
+relationship_types:
+  sdl.relationships.ConfigureTarget.Log4Shell:
+    derived_from: sdl.relationships.ConfigureTarget
+    interfaces:
+      Configure:
+        operations:
+          post_configure_target:
+            inputs:
+              ssh_user: { value: { get_property: [ TARGET, ssh_user ] }, type: string }
+              ssh_key_file: { value: { get_property: [ TARGET, ssh_key_file ] }, type: string }
+              cloud: { value: { get_property: [ TARGET, cloud ] }, type: string }
+              name: { value: { get_property: [ TARGET, name ] }, type: string }
+            implementation:
+              primary: ../playbooks/install-tools-to-victim-vm.yaml
+  sdl.relationships.ConfigureAdversary.Log4Shell:
+    derived_from: sdl.relationships.ConfigureAdversary
+    interfaces:
+      Configure:
+        operations:
+          post_configure_source:
+            inputs:
+              ssh_user: { value: { get_property: [ SOURCE, ssh_user ] }, type: string }
+              ssh_key_file: { value: { get_property: [ SOURCE, ssh_key_file ] }, type: string }
+              cloud: { value: { get_property: [ SOURCE, cloud ] }, type: string }
+              name: { value: { get_property: [ SOURCE, name ] }, type: string }
+            implementation:
+              primary: ../playbooks/install-tools-to-adversary-vm.yaml

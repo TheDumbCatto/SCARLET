@@ -1,0 +1,28 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  sdl.System:
+    derived_from: tosca.nodes.Compute
+    properties:
+      name:
+        type: string
+        description: Name for the compute node
+      image:
+        type: string
+        description: Image ID/name for the compute node
+      flavor:
+        type: string
+        description: OpenStack flavor id (flavor names are not accepted)
+      ssh_user:
+        type: string
+        description: The username that will be used to connect to the created VM
+      ssh_key_file:
+        type: string
+        description: Path to the local SSH private key file that will be used for the ssh connection to the VM
+      vm_group:
+        type: string
+        description: Group name for the node in Ansible's inventory
+    attributes:
+      id:
+        type: string
+        description: Id of the compute node

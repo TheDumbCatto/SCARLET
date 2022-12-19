@@ -1,0 +1,2 @@
+[console_scripts]
+opera-tosca-parser = opera_tosca_parser.cli:main

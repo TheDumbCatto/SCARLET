@@ -1,0 +1,13 @@
+# TODO: 
+# - provide a ssh_user
+
+cloud: theater-demo
+vm_name: test-host
+vm_group: offensive_vms
+vm_image: kali-linux
+vm_flavor: m1.small
+vm_network: DEMO_NET1
+vm_security_groups: default
+vm_key_name: test-keypair
+ssh_user: 
+ssh_key_file: /home/theater/.ssh/test-keypair.pem

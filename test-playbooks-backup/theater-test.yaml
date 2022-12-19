@@ -1,0 +1,97 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  template_name: "theater-demo"
+  template_author: ""
+  template_version: "0.1"
+
+imports:
+  - types/sdl-system-openstack-vm.yaml
+  - types/sdl-software-webserver.yaml
+  - types/sdl-vuln-implementation.yaml
+
+topology_template:
+  inputs:
+    cloud:
+      type: string
+    ssh_user:
+      type: string
+    ssh_key_file:
+      type: string
+
+    victim_vm_name:
+      type: string
+    victim_vm_image:
+      type: string
+    victim_vm_flavor:
+      type: string
+    victim_vm_network:
+      type: string
+    victim_vm_security_groups:
+      type: string
+    victim_vm_key_name:
+      type: string
+    victim_vm_group:
+      type: string
+
+    offense_vm_name:
+      type: string
+    offense_vm_image:
+      type: string
+    offense_vm_flavor:
+      type: string
+    offense_vm_network:
+      type: string
+    offense_vm_security_groups:
+      type: string
+    offense_vm_key_name:
+      type: string
+    offense_vm_group:
+      type: string
+
+  node_templates:
+    victim_vm:
+      type: sdl.System.Openstack.VM
+      properties:
+        cloud: { get_input: cloud }
+        name: { get_input: victim_vm_name }
+        image: { get_input: victim_vm_image }
+        flavor: { get_input: victim_vm_flavor }
+        network: { get_input: victim_vm_network }
+        security_groups: { get_input: victim_vm_security_groups }
+        key_name: { get_input: victim_vm_key_name }
+        vm_group: { get_input: victim_vm_group }
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+
+    tomcatWebServer:
+      type: sdl.Software.WebServer.TomcatWebServer
+      properties:
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+      requirements:
+        - host: victim_vm
+
+    adversary_vm:
+      type: sdl.System.Openstack.VM
+      properties:
+        cloud: { get_input: cloud }
+        name: { get_input: offense_vm_name }
+        image: { get_input: offense_vm_image }
+        flavor: { get_input: offense_vm_flavor }
+        network: { get_input: offense_vm_network }
+        security_groups: { get_input: offense_vm_security_groups }
+        key_name: { get_input: offense_vm_key_name }
+        vm_group: { get_input: offense_vm_group }
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+
+#    vulnerability:
+#      type: sdl.Vulnerability.Spring4Shell
+#      properties:
+#        ssh_user: { get_input: ssh_user }
+#        ssh_key_file: { get_input: ssh_key_file }
+#      requirements:
+#        - host: nginx
+
+

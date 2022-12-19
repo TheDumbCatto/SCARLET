@@ -1,0 +1,94 @@
+{
+  "tosca_name": {
+    "is_set": true,
+    "data": "victim_vm"
+  },
+  "tosca_id": {
+    "is_set": true,
+    "data": "victim_vm_0"
+  },
+  "state": {
+    "is_set": true,
+    "data": "started"
+  },
+  "name": {
+    "is_set": true,
+    "data": {
+      "get_input": "victim_vm_name"
+    }
+  },
+  "image": {
+    "is_set": true,
+    "data": {
+      "get_input": "victim_vm_image"
+    }
+  },
+  "flavor": {
+    "is_set": true,
+    "data": {
+      "get_input": "victim_vm_flavor"
+    }
+  },
+  "ssh_user": {
+    "is_set": true,
+    "data": {
+      "get_input": "ssh_user"
+    }
+  },
+  "ssh_key_file": {
+    "is_set": true,
+    "data": {
+      "get_input": "ssh_key_file"
+    }
+  },
+  "vm_group": {
+    "is_set": true,
+    "data": {
+      "get_input": "victim_vm_group"
+    }
+  },
+  "cloud": {
+    "is_set": true,
+    "data": {
+      "get_input": "cloud"
+    }
+  },
+  "network": {
+    "is_set": true,
+    "data": {
+      "get_input": "victim_vm_network"
+    }
+  },
+  "security_groups": {
+    "is_set": true,
+    "data": {
+      "get_input": "victim_vm_security_groups"
+    }
+  },
+  "key_name": {
+    "is_set": true,
+    "data": {
+      "get_input": "victim_vm_key_name"
+    }
+  },
+  "private_address": {
+    "is_set": true,
+    "data": "10.0.0.22"
+  },
+  "public_address": {
+    "is_set": true,
+    "data": "172.24.4.198"
+  },
+  "networks": {
+    "is_set": false,
+    "data": null
+  },
+  "ports": {
+    "is_set": false,
+    "data": null
+  },
+  "id": {
+    "is_set": true,
+    "data": "e89ed53d-e326-4105-9cd8-dc887a80dc78"
+  }
+}

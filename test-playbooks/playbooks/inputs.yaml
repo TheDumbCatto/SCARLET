@@ -1,0 +1,19 @@
+cloud: theater
+ssh_user: centos
+ssh_key_file: /home/theater/.ssh/test-keypair.pem
+
+victim_vm_name: victim
+victim_vm_image:  centos7-x86_64-GenericCloud-main
+victim_vm_flavor: ds3G
+victim_vm_network: private
+victim_vm_security_groups: default
+victim_vm_key_name: test-keypair
+victim_vm_group: victim_vms
+
+offense_vm_name: adversary
+offense_vm_image:  centos7-x86_64-GenericCloud-main
+offense_vm_flavor: ds2G
+offense_vm_network: private
+offense_vm_security_groups: default
+offense_vm_key_name: test-keypair
+offense_vm_group: offense_vms

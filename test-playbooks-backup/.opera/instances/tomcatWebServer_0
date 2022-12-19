@@ -1,0 +1,38 @@
+{
+  "tosca_name": {
+    "is_set": true,
+    "data": "tomcatWebServer"
+  },
+  "tosca_id": {
+    "is_set": true,
+    "data": "tomcatWebServer_0"
+  },
+  "state": {
+    "is_set": true,
+    "data": "started"
+  },
+  "component_version": {
+    "is_set": false,
+    "data": null
+  },
+  "admin_credential": {
+    "is_set": false,
+    "data": null
+  },
+  "ssh_user": {
+    "is_set": true,
+    "data": {
+      "get_input": "ssh_user"
+    }
+  },
+  "ssh_key_file": {
+    "is_set": true,
+    "data": {
+      "get_input": "ssh_key_file"
+    }
+  },
+  "site_config_dir": {
+    "is_set": false,
+    "data": null
+  }
+}

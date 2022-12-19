@@ -1,0 +1,59 @@
+#- name: create and add Openstack VM to inventory
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: create VM
+      openstack.cloud.server:
+        state: present
+        auto_ip: true
+        cloud: "{{ cloud }}"
+        name: "{{ vm_name }}"
+        image: "{{ vm_image }}"
+        key_name: "{{ vm_key_name }}"
+        flavor: "{{ vm_flavor }}"
+        network: "{{ vm_network }}"
+        security_groups: "{{ vm_security_groups }}"
+      register: server_info
+    - name: Done creating VM
+      debug:
+        msg: 'Start Set attr'
+    - name: Set attributes
+      set_stats:
+        data:
+          private_address: "{{ server_info.server.private_v4 }}"
+          public_address: "{{ server_info.server.public_v4 }}"
+          id: "{{ server_info.server.id }}"
+    - name: Done setting attrs
+      debug:
+        msg: 'Done setting attr'
+    - name: add VM to inventory
+      add_host:
+        name: "{{ server_info.server.public_v4 }}"
+        groups: "{{ vm_group }}"
+        ansible_host: "{{ server_info.server.public_v4 }}"
+        ansible_user: "{{ ssh_user }}"
+        ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+        ansible_ssh_common_args: >
+          -o IdentitiesOnly=yes
+          -o BatchMode=yes
+          -o UserKnownHostsFile=/dev/null
+          -o StrictHostKeyChecking=no
+    - name: Done adding VM to temp inventory
+      debug:
+        msg: 'Done adding vm to temp inventory'
+
+- name: Doing stuff with hosts in the inventory
+  hosts: "{{ vm_group }}"
+  gather_facts: no
+  tasks:
+    - name: Wait for ssh to wake up
+      wait_for_connection:
+        delay: 10
+        sleep: 5
+        timeout: 300
+    - name: Done waiting for ssh
+      debug:
+        msg: 'Done waiting for ssh'
+#    - name: add VM to inventory
+#      command: "echo {{ server_info }} && echo '==============SERVER INFO=============='"
+

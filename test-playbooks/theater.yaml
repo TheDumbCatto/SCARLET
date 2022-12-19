@@ -1,0 +1,69 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  template_name: "theater-demo"
+  template_author: ""
+  template_version: "0.1"
+
+imports:
+  - types/sdl-system-openstack-vm.yaml
+  - types/sdl-software-apache.yaml
+  - types/sdl-vuln.yaml
+
+topology_template:
+  inputs:
+    vm_name:
+      type: string
+    vm_image:
+      type: string
+    vm_flavor:
+      type: string
+    vm_network:
+      type: string
+    vm_security_groups:
+      type: string
+    vm_key_name:
+      type: string
+    ssh_user:
+      type: string
+    ssh_key_file:
+      type: string
+
+  node_templates:
+    sdl.Vulnerability.Spring4Shell:
+      type: sdl.Vulnerability
+      properties:
+        name: 'Spring 4 Shell'
+      requirements:
+        - vulnerable_host:
+            capability: sdl.capabilities.VulnerabilityContainer
+            node: sdl.Software.ApacheWebServer
+    vm:
+      type: sdl.System.Openstack.VM
+      properties:
+        name: { get_input: vm_name }
+        image: { get_input: vm_image }
+        flavor: { get_input: vm_flavor }
+        network: { get_input: vm_network }
+        security_groups: { get_input: vm_security_groups }
+        key_name: { get_input: vm_key_name }
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+
+    apacheWebServer:
+      type: sdl.Software.ApacheWebServer
+      properties:
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+      requirements:
+        - host: vm
+
+    vulnerability:
+      type: sdl.Vulnerability.Spring4Shell
+      properties:
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+      requirements:
+        - host: nginx
+
+
