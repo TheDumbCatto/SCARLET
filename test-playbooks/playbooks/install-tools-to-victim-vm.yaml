@@ -25,9 +25,9 @@
   hosts: vms
   gather_facts: no
   become: yes
-  vars:
-    ansible_ssh_user: "{{ ssh_user }}"
-    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+#  vars:
+#    ansible_ssh_user: "{{ ssh_user }}"
+#    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
   tasks:
     - name: Testing
       shell: touch /home/centos/hello_again.txt
@@ -60,6 +60,6 @@
         systemctl start docker
         docker build -t log4j-shell-poc .
         echo $'Tony Stark was able to build this from a box of scraps.\n\n\nIN A CAVE!' >> secret_message.txt
-        docker cp secret_message.txt $(docker run -d --network host log4j-shell-poc):/root/secret_message.txt 
+        docker cp secret_message.txt $(docker run -d --network host log4j-shell-poc):/root/secret_message.txt
       args:
         chdir: log4j-shell-poc/

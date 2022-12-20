@@ -9,7 +9,7 @@
   },
   "state": {
     "is_set": true,
-    "data": "started"
+    "data": "error"
   },
   "name": {
     "is_set": true,
@@ -72,12 +72,12 @@
     }
   },
   "private_address": {
-    "is_set": true,
-    "data": "10.0.0.7"
+    "is_set": false,
+    "data": null
   },
   "public_address": {
-    "is_set": true,
-    "data": "172.24.4.220"
+    "is_set": false,
+    "data": null
   },
   "networks": {
     "is_set": false,
@@ -88,7 +88,7 @@
     "data": null
   },
   "id": {
-    "is_set": true,
-    "data": "24643008-a0b9-41c1-ba97-e37cc6c3df10"
+    "is_set": false,
+    "data": null
   }
 }

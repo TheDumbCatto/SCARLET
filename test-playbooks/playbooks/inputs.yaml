@@ -4,7 +4,7 @@ ssh_key_file: /home/theater/.ssh/test-keypair.pem
 
 victim_vm_name: victim
 victim_vm_image:  centos7-x86_64-GenericCloud-main
-victim_vm_flavor: ds3G
+victim_vm_flavor: ds4G.larger.2CPU
 victim_vm_network: private
 victim_vm_security_groups: default
 victim_vm_key_name: test-keypair
