@@ -50,7 +50,7 @@
           - containerd.io
           - docker-compose-plugin
           - git
-        state: present
+        state: latest
 
     - name: Download log4shell poc
       shell: git clone https://github.com/kozmer/log4j-shell-poc.git
@@ -58,6 +58,7 @@
     - name: Run a vulnerable log4shell poc and add a flag file to the container
       shell: |
         systemctl start docker
+        docker pull tomcat:8.0.36-jre8 || docker pull tomcat:8.0.36-jre8
         docker build -t log4j-shell-poc .
         echo $'Tony Stark was able to build this from a box of scraps.\n\n\nIN A CAVE!' >> secret_message.txt
         docker cp secret_message.txt $(docker run -d --network host log4j-shell-poc):/root/secret_message.txt
