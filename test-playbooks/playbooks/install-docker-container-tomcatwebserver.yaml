@@ -1,0 +1,29 @@
+- name: Installing tomcatwebserver docker image
+  hosts: all
+  gather_facts: no
+  become: yes
+  vars:
+    ansible_ssh_user: "{{ ssh_user }}"
+    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+  tasks:
+    - name: Testing
+      shell: touch /home/centos/hello_again.txt
+
+    - name: Add docker repo to yum
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Download required files
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: latest
+
+    - name: Download tomcat docker image
+      shell: |
+        systemctl start docker
+        docker pull tomcat:8.0.36-jre8 || docker pull tomcat:8.0.36-jre8
+
+

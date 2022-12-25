@@ -11,6 +11,7 @@ imports:
   - types/sdl-relationship-log4shell.yaml
   - types/root-types/sdl-capability.yaml
   - types/root-types/sdl-relationship.yaml
+  - types/sdl-software-implementation.yaml
 
 node_types:
   sdl.System.Openstack.VM.Target:
@@ -78,13 +79,13 @@ topology_template:
         ssh_user: { get_input: ssh_user }
         ssh_key_file: { get_input: ssh_key_file }
 
-#    tomcatWebServer:
-#      type: sdl.Software.WebServer.TomcatWebServer
-#      properties:
-#        ssh_user: { get_input: ssh_user }
-#        ssh_key_file: { get_input: ssh_key_file }
-#      requirements:
-#        - host: victim_vm
+    tomcat_docker_container:
+      type: sdl.Software.DockerContainer.TomcatWebServer
+      properties:
+        ssh_user: { get_input: ssh_user }
+        ssh_key_file: { get_input: ssh_key_file }
+      requirements:
+        - host: victim_vm
 
     adversary_vm:
       type: sdl.System.Openstack.VM.Adversary
@@ -106,7 +107,7 @@ topology_template:
     cve_2021_44228:
       type: sdl.vulnerabilities.Log4Shell
       requirements:
-        - vulnerable_host: victim_vm
+        - vulnerable_host: tomcat_docker_container
 
 #    vulnerability:
 #      type: sdl.Vulnerability.Spring4Shell
