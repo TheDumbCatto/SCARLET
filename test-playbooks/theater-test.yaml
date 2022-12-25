@@ -80,10 +80,12 @@ topology_template:
         ssh_key_file: { get_input: ssh_key_file }
 
     tomcat_docker_container:
-      type: sdl.Software.DockerContainer.TomcatWebServer
+      type: sdl.Software.Openstack.DockerContainer.TomcatWebServer
       properties:
         ssh_user: { get_input: ssh_user }
         ssh_key_file: { get_input: ssh_key_file }
+        cloud: { get_input: cloud }
+        name: { get_input: victim_vm_name }
       requirements:
         - host: victim_vm
 
