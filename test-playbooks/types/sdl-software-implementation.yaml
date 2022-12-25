@@ -7,6 +7,29 @@ node_types:
   sdl.Software.WebServer:
     derived_from: sdl.Software
 
+  sdl.Software.Openstack.DockerContainer:
+    derived_from: sdl.Software
+
+  sdl.Software.Openstack.DockerContainer.TomcatWebServer:
+    derived_from: sdl.Software.Openstack.DockerContainer
+    properties:
+      cloud:
+        type: string
+        description: The Openstack project of the VM hosting this container
+      name:
+        type: string
+        description: The name of the Openstack VM hosting this container
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        inputs:
+          ssh_user: { value: { get_property: [ SELF, ssh_user ] }, type: string }
+          ssh_key_file: { value: { get_property: [ SELF, ssh_key_file ] }, type: string }
+        operations:
+          create:
+            implementation:
+              primary: ../playbooks/install-docker-container-tomcatwebserver.yaml
+
   sdl.Software.WebServer.TomcatWebServer:
     derived_from: sdl.Software.WebServer
     attributes:

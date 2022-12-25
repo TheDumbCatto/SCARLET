@@ -43,7 +43,7 @@
 
     - name: Download required files
       shell: |
-        curl -L -o jdk-8u20-linux-x64.tar.gz http://www.cs.ait.ac.th/~marikhu/installers/jdk-8u20-linux-x64.tar.gz
+        curl -L -o jdk-8u20-linux-x64.tar.gz https://mirrors.aiwsz.com/jdk/jdk-8u20-linux-x64.tar.gz
         tar -xf jdk-8u20-linux-x64.tar.gz
         python3 -m pip install -r requirements.txt
       args:
